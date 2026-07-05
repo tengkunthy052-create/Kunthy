@@ -1,0 +1,126 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Inventory product item details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "category": { "type": "string" },
+        "stock": { "type": "number" },
+        "purchasePrice": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["id", "name", "sku", "category", "stock", "purchasePrice", "sellingPrice"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Sale transaction record details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productName": { "type": "string" },
+        "productId": { "type": "string" },
+        "quantity": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "totalSelling": { "type": "number" },
+        "totalCost": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "handledBy": { "type": "string" },
+        "originalSellingPrice": { "type": "number" },
+        "discountAmount": { "type": "number" },
+        "discountPercent": { "type": "number" },
+        "qrPaymentUrl": { "type": "string" }
+      },
+      "required": ["id", "productName", "productId", "quantity", "sellingPrice", "totalSelling", "totalCost", "date", "handledBy"]
+    },
+    "TeamMember": {
+      "title": "TeamMember",
+      "description": "Information about shop staff members",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["Owner", "Admin"] },
+        "status": { "type": "string", "enum": ["Active", "Inactive"] },
+        "email": { "type": "string" },
+        "salary": { "type": "number" }
+      },
+      "required": ["id", "name", "role", "status", "email", "salary"]
+    },
+    "Expense": {
+      "title": "Expense",
+      "description": "Operational expense logs",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "title": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "recordedBy": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "required": ["id", "category", "title", "amount", "date", "recordedBy"]
+    },
+    "ActionLog": {
+      "title": "ActionLog",
+      "description": "System auditory log entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user": { "type": "string" },
+        "role": { "type": "string" },
+        "action": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "user", "role", "action", "details", "timestamp"]
+    },
+    "ShopBranding": {
+      "title": "ShopBranding",
+      "description": "Metadata config of current shop layout, icons, and languages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "nameKm": { "type": "string" },
+        "nameEn": { "type": "string" },
+        "logoType": { "type": "string" },
+        "logoIcon": { "type": "string" },
+        "logoImgUrl": { "type": "string" },
+        "logoColor": { "type": "string" }
+      },
+      "required": ["id", "nameKm", "nameEn", "logoType", "logoIcon", "logoColor"]
+    }
+  },
+  "firestore": {
+    "products": {
+      "schema": "Product",
+      "description": "Collection of products in store stock"
+    },
+    "sales": {
+      "schema": "Sale",
+      "description": "Collection of recorded sales"
+    },
+    "expenses": {
+      "schema": "Expense",
+      "description": "Collection of operational expenses"
+    },
+    "team": {
+      "schema": "TeamMember",
+      "description": "Collection of user permissions, roles, and salaries"
+    },
+    "logs": {
+      "schema": "ActionLog",
+      "description": "Audit trails for application operations"
+    },
+    "shopSettings": {
+      "schema": "ShopBranding",
+      "description": "Single-document collection for layout identity"
+    }
+  }
+}

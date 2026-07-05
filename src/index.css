@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Kantumruy+Pro:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", "Kantumruy Pro", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* Custom scrollbar and backdrop styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.5);
+}
+
+/* HIGH-INTENSITY DARK MODE CONFIGURATION */
+.dark {
+  background-color: #030712 !important; /* bg-slate-950 */
+  color: #f8fafc !important; /* text-slate-50 */
+}
+
+/* Transform light panels, white cards, and containers into midnight slate */
+.dark .bg-white,
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+  background-color: #0f172a !important; /* bg-slate-900 */
+  color: #f1f5f9 !important;
+}
+
+/* Transform table elements, headers, and list grids */
+.dark table,
+.dark th,
+.dark td,
+.dark thead {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: #1e293b !important;
+}
+
+.dark tbody tr:hover {
+  background-color: #1e293b !important;
+}
+
+/* Accentuate primary headings, labels, and text colors */
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: #94a3b8 !important; /* lighter gray */
+}
+
+/* Transform border dividers to avoid harsh white lines */
+.dark .border-slate-200,
+.dark .border-slate-300,
+.dark .border-slate-100,
+.dark .border-slate-50,
+.dark .border {
+  border-color: #1e293b !important; /* border-slate-800 */
+}
+
+/* Transform forms such as inputs, selector boxes, and textareas */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #030712 !important; /* bg-slate-950 */
+  color: #f8fafc !important;
+  border-color: #334155 !important; /* border-slate-700 */
+}
+
+.dark input::placeholder {
+  color: #475569 !important; /* placeholder-slate-600 */
+}
+
+.dark input:disabled {
+  background-color: #1e293b !important;
+  color: #64748b !important;
+}
+
+/* Interactive custom components inside dark container wrappers */
+.dark .bg-indigo-50 {
+  background-color: rgba(99, 102, 241, 0.1) !important; /* bg-indigo-500/10 */
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+
+.dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.1) !important; /* bg-emerald-500/10 */
+  border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.dark .bg-rose-50 {
+  background-color: rgba(244, 63, 94, 0.1) !important; /* bg-rose-500/10 */
+  border-color: rgba(244, 63, 94, 0.2) !important;
+}
+
+.dark .bg-slate-50 {
+  background-color: #1e293b !important;
+}
+
+.dark .text-indigo-600,
+.dark .text-indigo-700 {
+  color: #818cf8 !important; /* text-indigo-400 */
+}
+
+.dark .text-emerald-600,
+.dark .text-emerald-700 {
+  color: #34d399 !important; /* text-emerald-400 */
+}
+
+.dark .text-rose-600,
+.dark .text-rose-700 {
+  color: #f43f5e !important; /* text-rose-500 / rose-400 */
+}
+
+.dark .text-amber-600,
+.dark .text-amber-700 {
+  color: #fbbf24 !important; /* text-amber-400 */
+}
+
+/* Dropdown listings style for autocompletes or item cards */
+.dark .shadow-xs,
+.dark .shadow-sm,
+.dark .shadow-md,
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.4) !important;
+}

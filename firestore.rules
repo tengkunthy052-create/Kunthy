@@ -1,0 +1,172 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 1. Products Collection
+    match /products/{prodId} {
+      allow read: if true;
+      allow create: if isValidId(prodId) && isValidProduct(incoming()) && incoming().id == prodId;
+      allow update: if isValidId(prodId) && isValidProduct(incoming()) && incoming().id == existing().id && (
+        // Enforce immutability of SKU on updates unless admin/owner
+        incoming().sku == existing().sku || incoming().updatedBy is string
+      );
+      allow delete: if isValidId(prodId);
+    }
+
+    function isValidProduct(p) {
+      return p.keys().hasAll(['id', 'name', 'sku', 'category', 'stock', 'purchasePrice', 'sellingPrice', 'updatedAt', 'updatedBy']) &&
+             p.id is string && p.id.size() <= 128 &&
+             p.name is string && p.name.size() > 0 && p.name.size() <= 512 &&
+             p.sku is string && p.sku.size() > 0 && p.sku.size() <= 128 &&
+             p.category is string && p.category.size() > 0 && p.category.size() <= 128 &&
+             p.stock is number && p.stock >= 0 &&
+             p.purchasePrice is number && p.purchasePrice >= 0 &&
+             p.sellingPrice is number && p.sellingPrice >= 0 &&
+             p.updatedAt is string &&
+             p.updatedBy is string && p.updatedBy.size() <= 256;
+    }
+
+    // 2. Sales Collection
+    match /sales/{saleId} {
+      allow read: if true;
+      allow create: if isValidId(saleId) && isValidSale(incoming()) && incoming().id == saleId;
+      allow update: if isValidId(saleId) && isValidSale(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(saleId);
+    }
+
+    function isValidSale(s) {
+      return s.keys().hasAll(['id', 'productName', 'productId', 'quantity', 'sellingPrice', 'totalSelling', 'totalCost', 'date', 'handledBy']) &&
+             s.id is string && s.id.size() <= 128 &&
+             s.productName is string && s.productName.size() > 0 && s.productName.size() <= 512 &&
+             s.productId is string && s.productId.size() <= 128 &&
+             s.quantity is number && s.quantity != 0 &&
+             s.sellingPrice is number && s.sellingPrice >= 0 &&
+             s.totalSelling is number &&
+             s.totalCost is number &&
+             s.date is string &&
+             s.handledBy is string && s.handledBy.size() <= 256;
+    }
+
+    // 3. Expenses Collection
+    match /expenses/{expId} {
+      allow read: if true;
+      allow create: if isValidId(expId) && isValidExpense(incoming()) && incoming().id == expId;
+      allow update: if isValidId(expId) && isValidExpense(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(expId);
+    }
+
+    function isValidExpense(e) {
+      return e.keys().hasAll(['id', 'category', 'title', 'amount', 'date', 'recordedBy']) &&
+             e.id is string && e.id.size() <= 128 &&
+             e.category is string && e.category.size() <= 128 &&
+             e.title is string && e.title.size() > 0 && e.title.size() <= 512 &&
+             e.amount is number && e.amount >= 0 &&
+             e.date is string &&
+             e.recordedBy is string && e.recordedBy.size() <= 256;
+    }
+
+    // 4. Team Collection
+    match /team/{memberId} {
+      allow read: if true;
+      allow create: if isValidId(memberId) && isValidTeamMember(incoming()) && incoming().id == memberId;
+      allow update: if isValidId(memberId) && isValidTeamMember(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(memberId);
+    }
+
+    function isValidTeamMember(t) {
+      return t.keys().hasAll(['id', 'name', 'role', 'status', 'email', 'salary']) &&
+             t.id is string && t.id.size() <= 128 &&
+             t.name is string && t.name.size() > 0 && t.name.size() <= 256 &&
+             t.role is string && (t.role == 'Owner' || t.role == 'Admin') &&
+             t.status is string && (t.status == 'Active' || t.status == 'Inactive') &&
+             t.email is string && t.email.size() <= 256 &&
+             t.salary is number && t.salary >= 0;
+    }
+
+    // 5. Logs Collection
+    match /logs/{logId} {
+      allow read: if true;
+      allow create: if isValidId(logId) && isValidActionLog(incoming()) && incoming().id == logId;
+      allow update: if isValidId(logId) && isValidActionLog(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(logId);
+    }
+
+    function isValidActionLog(l) {
+      return l.keys().hasAll(['id', 'user', 'role', 'action', 'details', 'timestamp']) &&
+             l.id is string && l.id.size() <= 128 &&
+             l.user is string && l.user.size() <= 256 &&
+             l.role is string &&
+             l.action is string && l.action.size() <= 512 &&
+             l.details is string && l.details.size() <= 100000 &&
+             l.timestamp is string;
+    }
+
+    // 6. ShopSettings Collection
+    match /shopSettings/{settingId} {
+      allow read: if true;
+      allow create: if settingId == 'branding' && isValidShopBranding(incoming());
+      allow update: if settingId == 'branding' && isValidShopBranding(incoming());
+      allow delete: if false;
+    }
+
+    function isValidShopBranding(b) {
+      return b.keys().hasAll(['id', 'nameKm', 'nameEn', 'logoType', 'logoIcon', 'logoColor']) &&
+             b.id is string && b.id == 'branding' &&
+             b.nameKm is string && b.nameKm.size() <= 512 &&
+             b.nameEn is string && b.nameEn.size() <= 512 &&
+             b.logoType is string && (b.logoType == 'icon' || b.logoType == 'image') &&
+             b.logoIcon is string && b.logoIcon.size() <= 256 &&
+             b.logoColor is string && b.logoColor.size() <= 100;
+    }
+
+    // 7. StockCounts Collection
+    match /stockCounts/{sessionId} {
+      allow read: if true;
+      allow create: if isValidId(sessionId) && isValidStockCount(incoming()) && incoming().id == sessionId;
+      allow update: if isValidId(sessionId) && isValidStockCount(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(sessionId);
+    }
+
+    function isValidStockCount(s) {
+      return s.keys().hasAll(['id', 'date', 'countedBy', 'items']) &&
+             s.id is string && s.id.size() <= 128 &&
+             s.date is string &&
+             s.countedBy is string && s.countedBy.size() <= 256 &&
+             s.items is list;
+    }
+
+    // 8. MonthlyClosings Collection
+    match /monthlyClosings/{closingId} {
+      allow read: if true;
+      allow create: if isValidId(closingId) && isValidMonthlyClosing(incoming()) && incoming().id == closingId;
+      allow update: if isValidId(closingId) && isValidMonthlyClosing(incoming()) && incoming().id == existing().id;
+      allow delete: if isValidId(closingId);
+    }
+
+    function isValidMonthlyClosing(m) {
+      return m.keys().hasAll(['id', 'monthYear', 'closedAt', 'closedBy', 'totalSales', 'totalCost', 'totalExpenses', 'netProfit', 'totalStockCapital']) &&
+             m.id is string && m.id.size() <= 128 &&
+             m.monthYear is string &&
+             m.closedAt is string &&
+             m.closedBy is string && m.closedBy.size() <= 256 &&
+             m.totalSales is number &&
+             m.totalCost is number &&
+             m.totalExpenses is number &&
+             m.netProfit is number &&
+             m.totalStockCapital is number;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Remix: Remix: Remix: Remix: Remix: Remix: Remix: Remix: Owner \u0026 Admin Suite",
+  "description": "ប្រព័ន្ធគ្រប់គ្រងទិន្នន័យរួមគ្នា សម្រាប់ Owner និង Admin - Shared Data Management Suite for Owners and Admins to manage inventory, sales, staff, and custom notifications together.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
